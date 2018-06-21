@@ -5,7 +5,7 @@ d3.json('miserables.json', (error, data) => {
 
 function draw(error, data) {
   if (error) console.error(error)
-  var d3Sample = function() {
+  var populateGraphFromStaticData = function() {
     var g = Viva.Graph.graph()
     g.Name = 'Sample graph from d3 library'
 
@@ -45,7 +45,7 @@ function draw(error, data) {
   ]
 
   var example = (function() {
-    var graph = d3Sample()
+    var graph = populateGraphFromStaticData()
 
     var layout = Viva.Graph.Layout.forceDirected(graph, {
       springLength: 35,
