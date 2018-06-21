@@ -5,8 +5,8 @@ d3.json('miserables.json', (error, data) => {
 
 function draw(error, data) {
   if (error) console.error(error)
-  var populateGraphFromStaticData = function() {
-    var g = Viva.Graph.graph()
+  const populateGraphFromStaticData = () => {
+    const g = Viva.Graph.graph();
     g.Name = 'Sample graph from d3 library'
 
     for (var i = 0; i < data.nodes.length; ++i) {
@@ -14,14 +14,14 @@ function draw(error, data) {
     }
 
     for (i = 0; i < data.links.length; ++i) {
-      var link = data.links[i]
+      const link = data.links[i];
       g.addLink(link.source, link.target, link.value)
     }
 
     return g
-  }
+  };
 
-  var colors = [
+  const colors = [
     '#1f77b4',
     '#aec7e8',
     '#ff7f0e',
@@ -42,50 +42,48 @@ function draw(error, data) {
     '#dbdb8d',
     '#17becf',
     '#9edae5'
-  ]
+  ];
 
-  var example = (function() {
-    var graph = populateGraphFromStaticData()
+  const example = ((() => {
+    const graph = populateGraphFromStaticData();
 
-    var layout = Viva.Graph.Layout.forceDirected(graph, {
+    const layout = Viva.Graph.Layout.forceDirected(graph, {
       springLength: 35,
       springCoeff: 0.00055,
       dragCoeff: 0.09,
       gravity: -1
-    })
+    });
 
-    var svgGraphics = Viva.Graph.View.svgGraphics()
+    const svgGraphics = Viva.Graph.View.svgGraphics();
     svgGraphics
-      .node(function(node) {
-        var groupId = node.data.group
-        var circle = Viva.Graph.svg('circle')
+      .node(node => {
+        const groupId = node.data.group;
+        const circle = Viva.Graph.svg('circle')
           .attr('r', 7)
           .attr('stroke', '#fff')
           .attr('stroke-width', '1.5px')
-          .attr('fill', colors[groupId ? groupId - 1 : 5])
+          .attr('fill', colors[groupId ? groupId - 1 : 5]);
 
         circle.append('title').text(node.data.name)
 
         return circle
       })
-      .placeNode(function(nodeUI, pos) {
+      .placeNode((nodeUI, pos) => {
         nodeUI.attr('cx', pos.x).attr('cy', pos.y)
       })
 
-    svgGraphics.link(function(link) {
-      return Viva.Graph.svg('line')
-        .attr('stroke', '#999')
-        .attr('stroke-width', Math.sqrt(link.data))
-    })
+    svgGraphics.link(link => Viva.Graph.svg('line')
+      .attr('stroke', '#999')
+      .attr('stroke-width', Math.sqrt(link.data)))
 
-    var renderer = Viva.Graph.View.renderer(graph, {
+    const renderer = Viva.Graph.View.renderer(graph, {
       container: document.getElementById('graph1'),
-      layout: layout,
+      layout,
       graphics: svgGraphics,
       prerender: 20,
       renderLinks: true
-    })
+    });
 
     renderer.run(500)
-  })()
+  }))();
 }
