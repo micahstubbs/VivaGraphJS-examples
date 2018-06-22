@@ -22,7 +22,7 @@ function draw(error, data) {
   const graph = populateGraphFromStaticData()
   const layout = d3Force(graph, {
     springLength: 20,
-    springCoeff: 1,
+    springCoeff: 0.2,
     gravity: -100,
     springIterations: 2
   })
