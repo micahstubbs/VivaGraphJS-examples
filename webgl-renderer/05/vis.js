@@ -5,37 +5,27 @@ d3.json('miserables-with-positions.json', (error, data) => {
 
 function draw(error, data) {
   if (error) console.error(error)
-  const populateGraphFromStaticData = () => {
-    const g = Viva.Graph.graph()
-    g.Name = 'Sample graph from d3 library'
 
-    // be flexible, accept datasets that have
-    // edges instead of links
-    if (
-      typeof data.links === 'undefined' &&
-      typeof data.edges !== 'undefined'
-    ) {
-      data.links = data.edges
-      delete data.edges
-    }
-
-    for (var i = 0; i < data.nodes.length; ++i) {
-      g.addNode(i, data.nodes[i])
-    }
-
-    for (i = 0; i < data.links.length; ++i) {
-      const link = data.links[i]
-      g.addLink(link.source, link.target, link.value)
-    }
-
-    return g
+  // be flexible, accept datasets that have
+  // edges instead of links
+  if (typeof data.links === 'undefined' && typeof data.edges !== 'undefined') {
+    data.links = data.edges
+    delete data.edges
   }
 
-  const graph = populateGraphFromStaticData()
+  const nodesCount = data.nodes.length
 
-  // predefined node positions
-  // const nodePositions = [{ x: -50, y: 0 }, { x: 0, y: -50 }, { x: 50, y: 0 }]
-  const nodePositions = data.nodes
+  const graph = Viva.Graph.graph()
+  graph.Name = 'Sample graph from d3 library'
+
+  for (var i = 0; i < data.nodes.length; ++i) {
+    graph.addNode(i, data.nodes[i])
+  }
+
+  for (i = 0; i < data.links.length; ++i) {
+    const link = data.links[i]
+    graph.addLink(link.source, link.target, link.value)
+  }
 
   console.log('data', data)
   console.log('graph', graph)
@@ -53,19 +43,6 @@ function draw(error, data) {
     prerender: true
   })
 
-  let i
-  const nodesCount = nodePositions.length
-
-  // Add nodes
-  for (i = 0; i < nodesCount; ++i) {
-    graph.addNode(i, nodePositions[i])
-  }
-
-  // and make them connected in a cycle:
-  for (i = 0; i < nodesCount; ++i) {
-    graph.addLink(i % nodesCount, (i + 1) % nodesCount)
-  }
-
   // set custom node placement callback for layout.
   // if you don't do this, constant layout performs random positioning.
   layout.placeNode(
@@ -74,7 +51,7 @@ function draw(error, data) {
     ) =>
       // random logic here. E.g. read from specific node.data
       // attributes. This callback is expected to return object {x : .. , y : .. }
-      nodePositions[node.id]
+      data.nodes[node.id]
   )
 
   renderer.run()
