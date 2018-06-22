@@ -9,6 +9,16 @@ function draw(error, data) {
     const g = Viva.Graph.graph()
     g.Name = 'Sample graph from d3 library'
 
+    // be flexible, accept datasets that have
+    // edges instead of links
+    if (
+      typeof graph.links === 'undefined' &&
+      typeof graph.edges !== 'undefined'
+    ) {
+      graph.links = graph.edges
+      delete graph.edges
+    }
+
     for (var i = 0; i < data.nodes.length; ++i) {
       g.addNode(i, data.nodes[i])
     }
