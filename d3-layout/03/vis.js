@@ -23,8 +23,8 @@ function draw(error, data) {
   const layout = d3Force(graph, {
     springLength: 20,
     springCoeff: 1,
-    gravity: -30,
-    springIterations: 10
+    gravity: -100,
+    springIterations: 2
   })
 
   const graphics = Viva.Graph.View.webglGraphics()
@@ -77,6 +77,7 @@ function draw(error, data) {
           .distance(options.springLength)
           .iterations(options.springIterations)
       )
+      .force('center', d3.forceCenter())
 
     console.log('nodes', nodes)
 
