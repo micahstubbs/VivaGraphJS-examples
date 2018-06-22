@@ -1,4 +1,4 @@
-this iteration logs out x,y positions of nodes
+this iteration loads node positions from the json file. layout is constant, pre-computed.
 
 ---
 

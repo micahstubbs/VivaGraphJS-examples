@@ -1,5 +1,5 @@
 /* global Viva */
-d3.json('miserables.json', (error, data) => {
+d3.json('miserables-with-positions.json', (error, data) => {
   draw(error, data)
 })
 
@@ -31,53 +31,51 @@ function draw(error, data) {
     return g
   }
 
-  const colors = [
-    '#1f77b4',
-    '#aec7e8',
-    '#ff7f0e',
-    '#ffbb78',
-    '#2ca02c',
-    '#98df8a',
-    '#d62728',
-    '#ff9896',
-    '#9467bd',
-    '#c5b0d5',
-    '#8c564b',
-    '#c49c94',
-    '#e377c2',
-    '#f7b6d2',
-    '#7f7f7f',
-    '#c7c7c7',
-    '#bcbd22',
-    '#dbdb8d',
-    '#17becf',
-    '#9edae5'
-  ]
+  const graph = populateGraphFromStaticData()
 
-  const example = (() => {
-    const graph = populateGraphFromStaticData()
+  // predefined node positions
+  // const nodePositions = [{ x: -50, y: 0 }, { x: 0, y: -50 }, { x: 50, y: 0 }]
+  const nodePositions = data.nodes
 
-    console.log('graph', graph)
-    console.log('nodes', graph.getNodesCount())
-    console.log('links', graph.getLinksCount())
+  console.log('data', data)
+  console.log('graph', graph)
+  console.log('nodes', graph.getNodesCount())
+  console.log('links', graph.getLinksCount())
 
-    const layout = Viva.Graph.Layout.forceDirected(graph, {
-      springLength: 30,
-      springCoeff: 0.0008,
-      dragCoeff: 0.01,
-      gravity: -1.2,
-      theta: 1
-    })
+  const layout = Viva.Graph.Layout.constant(graph)
 
-    const graphics = Viva.Graph.View.webglGraphics()
+  const graphics = Viva.Graph.View.webglGraphics()
 
-    const renderer = Viva.Graph.View.renderer(graph, {
-      layout,
-      graphics,
-      renderLinks: true,
-      prerender: true
-    })
+  const renderer = Viva.Graph.View.renderer(graph, {
+    layout,
+    graphics,
+    renderLinks: true,
+    prerender: true
+  })
 
-    renderer.run(70)
-  })()
+  let i
+  const nodesCount = nodePositions.length
+
+  // Add nodes
+  for (i = 0; i < nodesCount; ++i) {
+    graph.addNode(i, nodePositions[i])
+  }
+
+  // and make them connected in a cycle:
+  for (i = 0; i < nodesCount; ++i) {
+    graph.addLink(i % nodesCount, (i + 1) % nodesCount)
+  }
+
+  // set custom node placement callback for layout.
+  // if you don't do this, constant layout performs random positioning.
+  layout.placeNode(
+    (
+      node // node.id - points to its position but you can do your
+    ) =>
+      // random logic here. E.g. read from specific node.data
+      // attributes. This callback is expected to return object {x : .. , y : .. }
+      nodePositions[node.id]
+  )
+
+  renderer.run()
 }
