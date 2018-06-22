@@ -6,7 +6,7 @@ function draw(error, data) {
   if (error) console.error(error)
   const populateGraphFromStaticData = () => {
     const g = Viva.Graph.graph()
-    g.Name = 'Sample graph from d3 library'
+    g.Name = 'Les Miserables sample graph from the d3 library'
 
     for (var i = 0; i < data.nodes.length; ++i) {
       g.addNode(i, data.nodes[i])
