@@ -12,11 +12,11 @@ function draw(error, data) {
     // be flexible, accept datasets that have
     // edges instead of links
     if (
-      typeof graph.links === 'undefined' &&
-      typeof graph.edges !== 'undefined'
+      typeof data.links === 'undefined' &&
+      typeof data.edges !== 'undefined'
     ) {
-      graph.links = graph.edges
-      delete graph.edges
+      data.links = data.edges
+      delete data.edges
     }
 
     for (var i = 0; i < data.nodes.length; ++i) {
