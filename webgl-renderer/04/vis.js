@@ -68,6 +68,6 @@ function draw(error, data) {
       prerender: true
     })
 
-    renderer.run()
+    renderer.run(70)
   })()
 }
